@@ -28,18 +28,22 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingDto createBooking(BookingDto bookingDto) {
+        Double totalAmount = calculateAmountOnTheBasisOfSeatType(bookingDto);
         BookingEntity bookingEntity=BookingEntity.builder()
-                .bookingAmount(bookingDto.getBookingAmount())
+                .bookingAmount(totalAmount)
                 .seatsBooked(bookingDto.getSeatsBooked())
                 .bookingStatus(BookingStatus.PENDING)
                 .movieId(bookingDto.getMovieId())
                 .userId(bookingDto.getUserId())
                 .showDate(bookingDto.getShowDate())
                 .showTime(bookingDto.getShowTime())
+                .numberOfSeats(bookingDto.getNumberOfSeats())
+                .seatType(bookingDto.getSeatType())
                 .build();
         this.bookingRepository.save(bookingEntity); //CREATE A BOOKING WITH STATUS PENDING
         bookingDto.setBookingId(bookingEntity.getBookingId());
         bookingDto.setBookingStatus(BookingStatus.PENDING);
+        bookingDto.setBookingAmount(totalAmount);
         //PUBLISH THE BOOKING DATA TO KAFKA TOPIC
         this.bookingServiceKafkaPublisher.publishPaymentRequest(bookingDto);
 
@@ -69,4 +73,31 @@ public class BookingServiceImpl implements BookingService {
             bookingEntity.setBookingStatus(bookingDto.getBookingStatus());
         }
     }
+
+    @Override
+    public String findByBookingId(Long id) {
+        return bookingRepository.findByBookingId(id);
+
+    }
+
+    private static Double calculateAmountOnTheBasisOfSeatType(BookingDto bookingDto){
+        int pricePerSeat = 0;
+        switch (bookingDto.getSeatType().toLowerCase()) {
+            case "gold":
+                pricePerSeat = 300;
+                break;
+            case "silver":
+                pricePerSeat = 200;
+                break;
+            case "platinum":
+                pricePerSeat = 100;
+                break;
+            default:
+                System.out.println("Invalid seat type.");
+                return (double) 0L;
+        }
+        Long numberOfSeats = bookingDto.getNumberOfSeats();
+        return (double) (pricePerSeat * numberOfSeats);
+    }
+
 }

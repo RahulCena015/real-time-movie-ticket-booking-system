@@ -2,6 +2,7 @@ package com.movie.ticket.booking.system.service.controller;
 
 import com.movie.ticket.booking.system.commons.constants.LoggerConstants;
 import com.movie.ticket.booking.system.commons.dto.BookingDto;
+import com.movie.ticket.booking.system.service.entity.BookingEntity;
 import com.movie.ticket.booking.system.service.services.BookingService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -21,5 +22,10 @@ public class BookingAPI {
         log.info(LoggerConstants.ENTERED_CONTROLLER_MESSAGE.getValue(),"createBooking",this.getClass(),bookingDto.toString());
         return this.bookingService.createBooking(bookingDto);
 
+    }
+
+    @GetMapping("/getstatus/{id}")
+    public String getBookingStatusByBookingId(@PathVariable Long id){
+        return bookingService.findByBookingId(id);
     }
 }

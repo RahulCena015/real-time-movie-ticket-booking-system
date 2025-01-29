@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @Builder
@@ -16,7 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class PaymentDto {
 
-    private UUID bookingId;
+    private Long bookingId;
     private PaymentStatus paymentStatus;
     private Double paymentAmount;
 }

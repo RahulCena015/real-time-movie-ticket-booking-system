@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Data
@@ -18,11 +17,11 @@ import java.util.UUID;
 public class PaymentEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="payment_id")
-    private UUID paymentId;
+    private Long paymentId;
     @Column(name="booking_id")
-    private UUID bookingId;
+    private Long bookingId;
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
     @Column(name="payment_amount")

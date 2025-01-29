@@ -11,7 +11,6 @@ import org.springframework.validation.annotation.Validated;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @Builder
@@ -20,7 +19,7 @@ import java.util.UUID;
 @Validated
 public class BookingDto {
 
-    private UUID bookingId;
+    private Long bookingId;
     @NotBlank(message = "user id is Mandatory field, please enter the correct value")
     private String userId;
     @NotNull(message = "movie id is Mandatory field, please enter the correct value")
@@ -32,8 +31,11 @@ public class BookingDto {
     @NotNull(message = "show time is Mandatory field, please enter the correct value")
     private LocalTime showTime;
     private BookingStatus bookingStatus;
-    @NotNull(message = "booking amount is Mandatory field, please enter the correct value")
     private Double bookingAmount;
     @NotNull(message = "email-id is Mandatory field, please enter the correct email id")
     private String emailId;
+    @NotNull(message = "seat type is Mandatory field, please enter the seat type from Gold, Silver and Platanium")
+    private String seatType;
+    @NotNull(message = "total number of seats is Mandatory field, please enter the number of seats")
+    private Long numberOfSeats;
 }

@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @Entity
@@ -22,9 +21,9 @@ public class BookingEntity {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="booking_id")
-    private UUID bookingId;
+    private Long bookingId;
     @Column(name="user_id")
     private String userId;
     @Column(name="movie_id")
@@ -39,4 +38,8 @@ public class BookingEntity {
     private BookingStatus bookingStatus;
     @Column(name="booking_amount")
     private Double bookingAmount;
+    @Column(name="seat_type")
+    private String seatType;
+    @Column(name="number_of_seats")
+    private Long numberOfSeats;
 }
