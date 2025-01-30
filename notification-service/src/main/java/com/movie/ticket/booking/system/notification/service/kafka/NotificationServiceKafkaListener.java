@@ -30,7 +30,7 @@ public class NotificationServiceKafkaListener {
             BookingDto bookingDto=objectMapper.readValue(bookingDtoJson, BookingDto.class);
             log.info("Booking Confirmation Response: {} ",bookingDto.toString());
             //SEND EMAIL WITH BOOKING DETAILS
-           sendVerificationEmail(bookingDto.getEmailId(), String.valueOf(bookingDto.getBookingStatus()));
+           sendVerificationEmail(bookingDto, bookingDto.getEmailId());
             log.info("Mail sent successfully");
 
         } catch (JsonProcessingException e) {
@@ -40,9 +40,23 @@ public class NotificationServiceKafkaListener {
 
     }
 
-    private void sendVerificationEmail(String email, String status) {
+    private void sendVerificationEmail(BookingDto bookingResponse , String email) {
         String subject = "Your Booking confirmation status";
-        String body = "Your Booking status: " + status;
+        //String body = "Your Booking status: " + status;
+        String body = "<html><body>" +
+                "<h2>Your booking has been confirmed with the following details:</h2>" +
+                "<ul>" +
+                "<li><strong>Booking ID:</strong> " + bookingResponse.getBookingId() + "</li>" +
+                "<li><strong>Seats Booked:</strong> " + String.join(", ", bookingResponse.getSeatsBooked()) + "</li>" +
+                "<li><strong>Show Date:</strong> " + bookingResponse.getShowDate() + "</li>" +
+                "<li><strong>Show Time:</strong> " + bookingResponse.getShowTime() + "</li>" +
+                "<li><strong>Booking Status:</strong> " + bookingResponse.getBookingStatus() + "</li>" +
+                "<li><strong>Booking Amount:</strong> " + bookingResponse.getBookingAmount() + "</li>" +
+                "</ul>" +
+                "<p>Thank you for your booking!</p>" +
+                "<p>Best Regards,<br>Your Movie Booking Team</p>" +
+                "</body></html>";
+
         emailService.sendEmail(subject, body, email);
 
     }
