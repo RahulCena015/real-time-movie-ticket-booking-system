@@ -1,5 +1,6 @@
 package com.movie.ticket.booking.system.commons.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Validated
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookingDto {
 
     private Long bookingId;
@@ -36,6 +38,5 @@ public class BookingDto {
     private String emailId;
     @NotNull(message = "seat type is Mandatory field, please enter the seat type from Gold, Silver and Platanium")
     private String seatType;
-    @NotNull(message = "total number of seats is Mandatory field, please enter the number of seats")
     private Long numberOfSeats;
 }

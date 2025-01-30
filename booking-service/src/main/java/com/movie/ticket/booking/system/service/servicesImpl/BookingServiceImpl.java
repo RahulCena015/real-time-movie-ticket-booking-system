@@ -75,9 +75,16 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public String findByBookingId(Long id) {
-        return bookingRepository.findByBookingId(id);
-
+    public BookingDto findByBookingId(Long id) {
+        BookingEntity byBookingId = bookingRepository.findByBookingId(id);
+        BookingDto bookingDto=new BookingDto();
+        bookingDto.setBookingId(byBookingId.getBookingId());
+        bookingDto.setBookingStatus(byBookingId.getBookingStatus());
+        bookingDto.setBookingAmount(byBookingId.getBookingAmount());
+        bookingDto.setSeatsBooked(byBookingId.getSeatsBooked());
+        bookingDto.setShowDate(byBookingId.getShowDate());
+        bookingDto.setShowTime(byBookingId.getShowTime());
+        return bookingDto;
     }
 
     private static Double calculateAmountOnTheBasisOfSeatType(BookingDto bookingDto){
@@ -96,7 +103,7 @@ public class BookingServiceImpl implements BookingService {
                 System.out.println("Invalid seat type.");
                 return (double) 0L;
         }
-        Long numberOfSeats = bookingDto.getNumberOfSeats();
+        long numberOfSeats = bookingDto.getSeatsBooked().size();
         return (double) (pricePerSeat * numberOfSeats);
     }
 

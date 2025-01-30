@@ -9,5 +9,5 @@ public interface BookingService {
 
     public void processBooking(BookingDto bookingDto);
 
-    String findByBookingId(Long id);
+    BookingDto findByBookingId(Long id);
 }

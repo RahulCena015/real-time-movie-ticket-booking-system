@@ -25,7 +25,7 @@ public class BookingAPI {
     }
 
     @GetMapping("/getstatus/{id}")
-    public String getBookingStatusByBookingId(@PathVariable Long id){
+    public BookingDto getBookingStatusByBookingId(@PathVariable Long id){
         return bookingService.findByBookingId(id);
     }
 }

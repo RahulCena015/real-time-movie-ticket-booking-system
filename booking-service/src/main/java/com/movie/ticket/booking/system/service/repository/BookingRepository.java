@@ -13,6 +13,6 @@ import java.util.Optional;
 @Repository
 public interface BookingRepository extends JpaRepository<BookingEntity, Long> {
 
-    @Query(value = "SELECT booking_status FROM Booking_Table where booking_id =:id ",nativeQuery = true)
-    String findByBookingId(@Param("id") Long id);
+    @Query(value = "SELECT * FROM Booking_Table where booking_id =:id ",nativeQuery = true)
+    BookingEntity findByBookingId(@Param("id") Long id);
 }
