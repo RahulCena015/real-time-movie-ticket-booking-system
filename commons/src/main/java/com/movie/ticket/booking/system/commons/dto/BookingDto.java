@@ -39,4 +39,7 @@ public class BookingDto {
     @NotNull(message = "seat type is Mandatory field, please enter the seat type from Gold, Silver and Platanium")
     private String seatType;
     private Long numberOfSeats;
+    private String userName;
+    private String password;
+    private String roles;
 }

@@ -42,4 +42,11 @@ public class BookingEntity {
     private String seatType;
     @Column(name="number_of_seats")
     private Long numberOfSeats;
+
+    @Column(name="username")
+    private String userName;
+    @Column(name="password")
+    private String password;
+    @Column(name="user_roles")
+    private String roles;
 }

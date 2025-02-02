@@ -8,6 +8,8 @@ import com.movie.ticket.booking.system.service.publisher.BookingServiceKafkaPubl
 import com.movie.ticket.booking.system.service.repository.BookingRepository;
 import com.movie.ticket.booking.system.service.services.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +18,7 @@ import java.util.Optional;
 @Service
 public class BookingServiceImpl implements BookingService {
 
+    public static final String ROLE_USER = "ROLE_USER";
     @Autowired
     private PaymentServiceBroker paymentServiceBroker;
 
@@ -24,6 +27,9 @@ public class BookingServiceImpl implements BookingService {
 
     @Autowired
     BookingRepository bookingRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -39,29 +45,16 @@ public class BookingServiceImpl implements BookingService {
                 .showTime(bookingDto.getShowTime())
                 .numberOfSeats(bookingDto.getNumberOfSeats())
                 .seatType(bookingDto.getSeatType())
+                .userName(bookingDto.getUserName())
+                .password(passwordEncoder.encode(bookingDto.getPassword()))
+                .roles(ROLE_USER)
                 .build();
-        this.bookingRepository.save(bookingEntity); //CREATE A BOOKING WITH STATUS PENDING
+        this.bookingRepository.save(bookingEntity);
         bookingDto.setBookingId(bookingEntity.getBookingId());
         bookingDto.setBookingStatus(BookingStatus.PENDING);
         bookingDto.setBookingAmount(totalAmount);
-        //PUBLISH THE BOOKING DATA TO KAFKA TOPIC
         this.bookingServiceKafkaPublisher.publishPaymentRequest(bookingDto);
-
-        //CALL FOR PAYMENT SERVICE
-       // bookingDto= this.paymentServiceBroker.createPayment(bookingDto);
-        // bookingEntity.setBookingStatus(bookingDto.getBookingStatus());
         return bookingDto;
-
-        /*return BookingDto.builder()
-                .bookingId(bookingEntity.getBookingId())
-                .bookingAmount(bookingEntity.getBookingAmount())
-                .bookingStatus(bookingEntity.getBookingStatus())
-                .seatsBooked(bookingEntity.getSeatsBooked())
-                .movieId(bookingEntity.getMovieId())
-                .showTime(bookingEntity.getShowTime())
-                .showDate(bookingEntity.getShowDate())
-                .userId(bookingEntity.getUserId())
-                .build();*/
     }
 
     @Override
@@ -85,6 +78,16 @@ public class BookingServiceImpl implements BookingService {
         bookingDto.setShowDate(byBookingId.getShowDate());
         bookingDto.setShowTime(byBookingId.getShowTime());
         return bookingDto;
+    }
+
+    //Method kept on hold TODO
+    @Override
+    public Optional<BookingDto> findByUserName(String userName) {
+        BookingEntity findByUserName = bookingRepository.findByUserName(userName)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with given username :" + userName));
+        BookingDto bookingDto=new BookingDto();
+        bookingDto.setUserName(findByUserName.getUserName());
+        return null;
     }
 
     private static Double calculateAmountOnTheBasisOfSeatType(BookingDto bookingDto){
